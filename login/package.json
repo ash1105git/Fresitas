@@ -1,0 +1,18 @@
+{
+  "name": "fresitas-login",
+  "version": "1.0.0",
+  "description": "Módulo de login — Vue 3 + Vite",
+  "scripts": {
+    "dev": "vite --port 5174",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.2.0"
+  }
+}
