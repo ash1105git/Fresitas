@@ -1,0 +1,10 @@
+/*
+  Access-Control-Allow-Origin: *
+
+/assets/modelos/*.glb
+  Content-Type: model/gltf-binary
+  Cache-Control: public, max-age=604800
+
+/assets/modelos/*.usdz
+  Content-Type: model/vnd.usdz+zip
+  Cache-Control: public, max-age=604800

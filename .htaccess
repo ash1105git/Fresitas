@@ -1,0 +1,19 @@
+# MIME types para Realidad Aumentada (AR)
+# Necesarios para que los modelos 3D funcionen en Android e iPhone
+
+AddType model/gltf-binary .glb
+AddType model/gltf+json .gltf
+AddType model/vnd.usdz+zip .usdz
+
+# Permitir acceso cross-origin a los modelos 3D
+<IfModule mod_headers.c>
+  <FilesMatch "\.(glb|gltf|usdz)$">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>
+
+# Comprimir recursos de texto
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript
+</IfModule>

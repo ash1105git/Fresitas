@@ -1,0 +1,51 @@
+{
+  "Comment": "Fresitas AR — configuración de CloudFront para MIME types correctos",
+
+  "Notas": [
+    "Este archivo documenta la configuración recomendada de CloudFront.",
+    "Los MIME types críticos para AR se aplican en el script deploy-aws.sh",
+    "directamente sobre los objetos S3, que es el método más confiable."
+  ],
+
+  "BehaviorPorTipoDeArchivo": {
+    "*.glb": {
+      "ContentType": "model/gltf-binary",
+      "CacheControl": "public, max-age=604800",
+      "Razon": "Requerido para WebXR en Android y Quick Look en iOS Safari"
+    },
+    "*.usdz": {
+      "ContentType": "model/vnd.usdz+zip",
+      "CacheControl": "public, max-age=604800",
+      "Razon": "Formato nativo de AR para iPhone/iPad (ARKit)"
+    },
+    "*.html": {
+      "ContentType": "text/html; charset=utf-8",
+      "CacheControl": "public, max-age=300"
+    },
+    "*.css": {
+      "ContentType": "text/css; charset=utf-8",
+      "CacheControl": "public, max-age=86400"
+    },
+    "*.js": {
+      "ContentType": "application/javascript; charset=utf-8",
+      "CacheControl": "public, max-age=86400"
+    }
+  },
+
+  "ConfiguracionS3Requerida": {
+    "StaticWebsiteHosting": true,
+    "IndexDocument": "index.html",
+    "ErrorDocument": "index.html",
+    "BlockPublicAccess": false,
+    "BucketPolicy": "ver bucket-policy.json"
+  },
+
+  "ConfiguracionCloudFrontRecomendada": {
+    "HTTPS": "Obligatorio para que AR funcione en iOS",
+    "OriginProtocol": "http-only (S3 website endpoint)",
+    "ViewerProtocol": "redirect-to-https",
+    "PriceClass": "PriceClass_100",
+    "DefaultRootObject": "index.html",
+    "CompressObjects": true
+  }
+}
