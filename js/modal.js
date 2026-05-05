@@ -5,10 +5,11 @@
 let _modalScene = null;
 let _lightMode  = 0;
 
-function openModal(name, price, desc, color, imgSrc) {
+function openModal(name, price, desc, color, modelSrc, imgSrc){
   document.getElementById('modal-nombre').textContent = name;
   document.getElementById('modal-precio').textContent = price;
   document.getElementById('modal-desc').textContent   = desc;
+  
 
   const modal = document.getElementById('modal-3d');
   modal.classList.add('open');
