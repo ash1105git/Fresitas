@@ -8,22 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 
-  <!-- model-viewer: carga principal como módulo ES -->
-  <script type="module"
-    src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js">
-  </script>
-  <!-- Fallback CDN alternativo para navegadores sin soporte de módulos ES o con restricciones de red -->
-  <script>
-    window.addEventListener('DOMContentLoaded', function() {
-      // Verificar si model-viewer se registró correctamente
-      if (!customElements.get('model-viewer')) {
-        var s = document.createElement('script');
-        s.type = 'module';
-        s.src = 'https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js';
-        document.head.appendChild(s);
-      }
-    });
-  </script>
+  <!-- model-viewer: carga desde CDN confiable -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 
   <link rel="stylesheet" href="css/variables.css" />
 
@@ -441,24 +427,30 @@
       /* Desktop: mostrar aviso */
       document.getElementById('desktop-aviso').style.display = 'block';
     } else {
-      /* Móvil: verificar soporte AR después de que model-viewer se registre */
-      function checkARSupport() {
-        if (customElements.get('model-viewer') && mv) {
-          if (typeof mv.canActivateAR !== 'undefined') {
-            Promise.resolve(mv.canActivateAR).then(ok => {
-              if (!ok) document.getElementById('compat-nota').classList.add('visible');
-            }).catch(() => {
-              document.getElementById('compat-nota').classList.add('visible');
-            });
-          } else if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            document.getElementById('compat-nota').classList.add('visible');
-          }
+      /* Móvil: esperar a que model-viewer esté listo */
+      function waitForModelViewer() {
+        const mv = document.getElementById('mv');
+        if (customElements.get('model-viewer') && mv && mv.updateComplete) {
+          mv.updateComplete.then(() => {
+            checkARSupport();
+          });
         } else {
-          /* model-viewer aún no definido, reintentar */
-          setTimeout(checkARSupport, 600);
+          setTimeout(waitForModelViewer, 300);
         }
       }
-      checkARSupport();
+      
+      function checkARSupport() {
+        const mv = document.getElementById('mv');
+        if (mv && typeof mv.canActivateAR !== 'undefined') {
+          Promise.resolve(mv.canActivateAR).then(ok => {
+            if (!ok) document.getElementById('compat-nota').classList.add('visible');
+          }).catch(() => {
+            document.getElementById('compat-nota').classList.add('visible');
+          });
+        }
+      }
+      
+      waitForModelViewer();
     }
 
     /* Pre-seleccionar modelo desde URL ?modelo=xxx */
