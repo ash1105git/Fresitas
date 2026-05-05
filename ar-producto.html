@@ -315,7 +315,6 @@
       ar-modes="webxr scene-viewer quick-look"
       ar-scale="auto"
       ar-placement="floor"
-      xr-environment
       camera-controls
       auto-rotate
       auto-rotate-delay="800"
@@ -329,7 +328,6 @@
       camera-orbit="0deg 75deg 2.5m"
       touch-action="pan-y"
       poster=""
-      interaction-prompt="auto"
     >
       <button slot="ar-button" class="ar-btn-custom">
         📱 Ver en tu espacio
@@ -427,12 +425,14 @@
     loader.querySelector('.loader-txt').textContent = 'Error al cargar. Revisa tu conexión.';
   });
 
-  /* ── Al fallar la sesión AR mostrar mensaje claro ── */
-  mv.addEventListener('ar-status', e => {
-    if (e.detail.status === 'failed') {
-      alert('No se pudo iniciar AR.\n\nAndroid: asegúrate de tener Google Play Services para AR instalado.\niPhone/iPad: abre esta página desde Safari (no Chrome).');
-    }
-  });
+  /* ── Evento cuando modelo falla en AR ── */
+  if (mv.addEventListener) {
+    mv.addEventListener('ar-status', e => {
+      if (e && e.detail && e.detail.status === 'failed') {
+        alert('No se pudo iniciar AR.\n\nAndroid: asegúrate de tener Google Play Services para AR instalado.\niPhone/iPad: abre esta página desde Safari (no Chrome).');
+      }
+    });
+  }
 
   window.addEventListener('DOMContentLoaded', () => {
     const esMobil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -443,14 +443,18 @@
     } else {
       /* Móvil: verificar soporte AR después de que model-viewer se registre */
       function checkARSupport() {
-        if (customElements.get('model-viewer') && typeof mv.canActivateAR !== 'undefined') {
-          Promise.resolve(mv.canActivateAR).then(ok => {
-            if (!ok) document.getElementById('compat-nota').classList.add('visible');
-          }).catch(() => {
+        if (customElements.get('model-viewer') && mv) {
+          if (typeof mv.canActivateAR !== 'undefined') {
+            Promise.resolve(mv.canActivateAR).then(ok => {
+              if (!ok) document.getElementById('compat-nota').classList.add('visible');
+            }).catch(() => {
+              document.getElementById('compat-nota').classList.add('visible');
+            });
+          } else if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             document.getElementById('compat-nota').classList.add('visible');
-          });
+          }
         } else {
-          /* model-viewer aún no definido como custom element, reintentar */
+          /* model-viewer aún no definido, reintentar */
           setTimeout(checkARSupport, 600);
         }
       }
