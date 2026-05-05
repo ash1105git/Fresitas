@@ -296,7 +296,7 @@
 
     <model-viewer
       id="mv"
-      src="assets/modelos/jake.glb"
+      src="./assets/modelos/jake.glb"
       ar
       ar-modes="webxr scene-viewer quick-look"
       ar-scale="auto"
@@ -309,7 +309,7 @@
       shadow-softness="0.7"
       exposure="0.9"
       environment-image="neutral"
-      loading="eager"
+      loading="lazy"
       reveal="auto"
       camera-orbit="0deg 75deg 2.5m"
       touch-action="pan-y"
@@ -477,7 +477,7 @@
     loader.querySelector('.loader-txt').textContent = 'Cargando modelo 3D…';
 
     /* Cambiar src — model-viewer recarga automáticamente */
-    mv.src = 'assets/modelos/' + modelo + '.glb';
+    mv.src = './assets/modelos/' + modelo + '.glb';
 
     /* Actualizar panel de información */
     document.getElementById('info-nombre').textContent = nombreActual;
